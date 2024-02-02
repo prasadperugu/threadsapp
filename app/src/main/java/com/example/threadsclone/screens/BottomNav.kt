@@ -52,7 +52,7 @@ fun BottomNav(navController: NavHostController) {
                 Profile()
             }
             composable(Routes.Splash.routes) {
-                Splash()
+                Splash(navController)
             }
         }
     }

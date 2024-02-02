@@ -70,5 +70,6 @@ dependencies {
 
         val nav_version = "2.7.6"
         implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
 }
