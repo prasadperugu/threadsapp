@@ -10,6 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.example.threadsclone"
         minSdk = 24
+        //noinspection EditedTargetSdkVersion
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -66,4 +67,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+        val nav_version = "2.7.6"
+        implementation("androidx.navigation:navigation-compose:$nav_version")
+
 }
