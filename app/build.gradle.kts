@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -48,6 +49,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -68,8 +70,25 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-        val nav_version = "2.7.6"
-        implementation("androidx.navigation:navigation-compose:$nav_version")
+    val nav_version = "2.7.6"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("com.google.firebase:firebase-analytics")
+
+//    implementation("com.google.firebase:firebase-database-analytics")
+//    implementation("com.google.firebase:firebase-auth-analytics")
+//    implementation("com.google.firebase:firebase-firestore-analytics")
+//    implementation("com.google.firebase:firebase-storage-analytics")
+    implementation("com.google.firebase:firebase-analytics:21.5.0")
+    implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.google.firebase:firebase-firestore:24.10.1")
+    implementation("com.google.firebase:firebase-storage:20.3.0")
+
+
+
+
 
 }
