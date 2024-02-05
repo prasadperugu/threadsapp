@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,6 +27,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -95,11 +98,31 @@ fun Register(navHostController: NavHostController) {
     }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
-    ) { isGranter: Boolean ->
-        if (isGranter) {
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+
 
         } else {
 
+        }
+    }
+
+
+
+    //launchedeffect is not hitting if we click register here
+    LaunchedEffect(firebaseUser) {
+        //when click on New User?Crate Account  launchedeffect has been calling only for first time.
+        Log.i("Insidefirebase_","Yes")
+        if (firebaseUser!=null) {
+            Log.i("Insidefirebase_1","Yes")
+            navHostController.navigate(Routes.BottomNav.routes) {
+                Log.i("Insidefirebase_2","Yes")
+                popUpTo(navHostController.graph.startDestinationId)
+                launchSingleTop = true
+            }
+        }
+        else{
+            Log.i("ErrorCheckcase","Something went wrong")
         }
     }
 
@@ -123,8 +146,7 @@ fun Register(navHostController: NavHostController) {
 
         Image(
             painter = if (imageUri == null) painterResource(id = R.drawable.man)
-            else rememberAsyncImagePainter(model = imageUri)
-            ,contentDescription = "Person",
+            else rememberAsyncImagePainter(model = imageUri), contentDescription = "Person",
             modifier = Modifier
                 .size(96.dp)
                 .clip(CircleShape)
@@ -134,7 +156,6 @@ fun Register(navHostController: NavHostController) {
                     val isGranted = ContextCompat.checkSelfPermission(
                         context, permissionToRequest
                     ) == PackageManager.PERMISSION_GRANTED
-
 
                     if (isGranted) {
                         launcher.launch("image/*")
@@ -169,6 +190,13 @@ fun Register(navHostController: NavHostController) {
                 keyboardType = KeyboardType.Email
             ), singleLine = true, modifier = Modifier.fillMaxWidth()
         )
+        OutlinedTextField(
+            value = email, onValueChange = { email = it }, label = {
+                Text(text = "Email")
+            }, keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email
+            ), singleLine = true, modifier = Modifier.fillMaxWidth()
+        )
 
         OutlinedTextField(
             value = password, onValueChange = { password = it }, label = {
@@ -181,28 +209,22 @@ fun Register(navHostController: NavHostController) {
 
         ElevatedButton(onClick = {
 
-                                 if (name.isEmpty()
-                                     || email.isEmpty()
-                                     || bio.isEmpty()
-                                     || password.isEmpty()
-                                     || imageUri == null)
-                                 {
-                                     Toast.makeText(context
-                                         ,"Please fill all details"
-                                         ,Toast.LENGTH_SHORT)
-                                         .show()
-                                 } else{
-
-                                     authViewModel.register(
-                                         email
-                                         , password
-                                         , name
-                                         , bio
-                                         , userName
-                                         , imageUri!!
-
-                                     )
-                                 }
+            if (name.isEmpty()
+                || email.isEmpty()
+                || bio.isEmpty()
+                || password.isEmpty()
+                || imageUri == null
+            ) {
+                Log.i("searchingforbio", "rgistrationcode")
+                Toast.makeText(
+                    context, "Please fill all details", Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Log.i("searchingfor0", "rgistrationcode")
+                authViewModel.register(
+                    email, password, name, bio, userName, imageUri!!, context
+                )
+            }
 
 
         }, modifier = Modifier.fillMaxWidth()) {
@@ -219,12 +241,11 @@ fun Register(navHostController: NavHostController) {
                 launchSingleTop = true
             }
 
-        }, modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = "Already Register ? Login here", style = TextStyle(
+        },modifier = Modifier.fillMaxWidth()) {
+            Text(text = "Already Register? Login here"
+                , style = TextStyle(
                     fontSize = 16.sp
-                )
-            )
+                ))
         }
     }
 
