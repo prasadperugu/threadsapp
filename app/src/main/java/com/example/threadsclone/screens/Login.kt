@@ -94,7 +94,7 @@ fun Login(navController: NavHostController){
                 launchSingleTop = true
             }
 
-        }, modifier = Modifier.fillMaxWidth()) {
+        },modifier = Modifier.fillMaxWidth()) {
             Text(text = "New User? Create Account"
                 , style = TextStyle(
                     fontSize = 16.sp
