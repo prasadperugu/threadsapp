@@ -11,44 +11,34 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class HomeViewModel : ViewModel() {
+class SearchViewModel : ViewModel() {
 
     private val db: FirebaseDatabase = FirebaseDatabase.getInstance()
-    val thread: DatabaseReference = db.getReference("threads")
+    val users: DatabaseReference = db.getReference("users")
 
 
-    private val _threadsAndUsers = MutableLiveData<List<Pair<ThreadModel, UserModel>>>()
-    val threadsAndUsers: LiveData<List<Pair<ThreadModel, UserModel>>> = _threadsAndUsers
+    private val _users = MutableLiveData<List<UserModel>>()
+    val usersList: LiveData<List<UserModel>> = _users
 
     init {
-        Log.i("***outsideinsideinit000", "insideinit${threadsAndUsers}}")
-        fetchThreadsAndUsers {
+        Log.i("***outsideinsideinit000", "insideinit${users}}")
+        fetchUsers {
             Log.i("***insideinit", "insideinit")
-            _threadsAndUsers.value = it
+            _users.value = it
         }
 
     }
 
 
-    private fun fetchThreadsAndUsers(onResult: (List<Pair<ThreadModel, UserModel>>) -> Unit) {
-        thread.addValueEventListener(object : ValueEventListener {
+    private fun fetchUsers(onResult: (List<UserModel>) -> Unit) {
+        users.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val result = mutableListOf<Pair<ThreadModel, UserModel>>()
+                val result = mutableListOf<UserModel>()
                 for (threadSnapShot in snapshot.children) {
-                    val thread = threadSnapShot.getValue(ThreadModel::class.java)
-                    thread.let {
-                        fetchUserFromThread(it!!) { user ->
-                            Log.i("***insideinit01", "insideinit${thread}")
-                            result.add(0, it to user)
-                            if (result.size == snapshot.childrenCount.toInt()) {
-                                onResult(result)
-                            }
-                            Log.i("***insideinit02", "insideinit${onResult(result)}")
-                        }
-                    }
-
-
+                    val thread = threadSnapShot.getValue(UserModel::class.java)
+                    result.add(thread!!)
                 }
+                onResult(result)
             }
 
             override fun onCancelled(error: DatabaseError) {

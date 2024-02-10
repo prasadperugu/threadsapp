@@ -9,6 +9,7 @@ import com.example.threadsclone.screens.BottomNav
 import com.example.threadsclone.screens.Home
 import com.example.threadsclone.screens.Login
 import com.example.threadsclone.screens.Notification
+import com.example.threadsclone.screens.OtherUsers
 import com.example.threadsclone.screens.Profile
 import com.example.threadsclone.screens.Register
 import com.example.threadsclone.screens.Search
@@ -32,7 +33,7 @@ fun NavGraph(navController: NavHostController) {
             Notification()
         }
         composable(Routes.Search.routes) {
-            Search()
+            Search(navController)
         }
         composable(Routes.AddThreads.routes) {
             AddThreads(navController)
@@ -48,6 +49,10 @@ fun NavGraph(navController: NavHostController) {
         }
          composable(Routes.Register.routes) {
             Register(navController)
+        }
+         composable(Routes.OtherUsers.routes) {
+             val data = it.arguments!!.getString("data")
+            OtherUsers(navController, data!!)
         }
 
     }
