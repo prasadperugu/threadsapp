@@ -37,7 +37,7 @@ fun BottomNav(navController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = Routes.Home.routes) {
-                Home()
+                Home(navController1)
             }
             composable(Routes.Notification.routes) {
                 Notification()
@@ -46,7 +46,7 @@ fun BottomNav(navController: NavHostController) {
                 Search()
             }
             composable(Routes.AddThreads.routes) {
-                AddThreads()
+                AddThreads(navController1)
             }
             composable(Routes.Profile.routes) {
                 Profile(navController)
