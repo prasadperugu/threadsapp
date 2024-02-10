@@ -62,8 +62,6 @@ fun AddThreads(navHostController: NavHostController) {
     val isPosted by threadViewModel.isPosted.observeAsState(false)
 
 
-
-
     val context: Context = LocalContext.current
 
     var thread by remember {
@@ -97,14 +95,14 @@ fun AddThreads(navHostController: NavHostController) {
         }
     }
 
-    LaunchedEffect(isPosted ){
-        if (isPosted!!){
+    LaunchedEffect(isPosted) {
+        if (isPosted!!) {
             thread = ""
             imageUri = null
             Toast.makeText(context, "Thread added", Toast.LENGTH_SHORT).show()
 
             navHostController.navigate(Routes.Home.routes) {
-                popUpTo(Routes.AddThreads.routes){
+                popUpTo(Routes.AddThreads.routes) {
                     inclusive = true
                 }
             }
@@ -134,7 +132,7 @@ fun AddThreads(navHostController: NavHostController) {
                 .clickable {
 
                     navHostController.navigate(Routes.Home.routes) {
-                        popUpTo(Routes.AddThreads.routes){
+                        popUpTo(Routes.AddThreads.routes) {
                             inclusive = true
                         }
                     }
@@ -231,9 +229,6 @@ fun AddThreads(navHostController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight()
-//                        .fillMaxSize()
-//                        .size(36.dp)
-//                        .clip(CircleShape)
                     , contentScale = ContentScale.Crop
                 )
 
@@ -248,39 +243,38 @@ fun AddThreads(navHostController: NavHostController) {
             }
 
 
-
         }
         Text(text =
         "Anyone can reply"
 //        SharedPref.getuserName(context)
             , style = TextStyle(
-            fontSize = 20.sp
-        ), modifier = Modifier.constrainAs(replyText) {
+                fontSize = 20.sp
+            ), modifier = Modifier.constrainAs(replyText) {
 
-            start.linkTo(parent.start, margin = 12.dp)
-            bottom.linkTo(parent.bottom, margin = 12.dp)
-        }
+                start.linkTo(parent.start, margin = 12.dp)
+                bottom.linkTo(parent.bottom, margin = 12.dp)
+            }
         )
 
         TextButton(onClick = {
-                             if (imageUri == null){
-                                 threadViewModel.saveData(thread
-                                     , FirebaseAuth.getInstance().currentUser!!.uid
-                                     ,"")
-                             } else{
-                                 threadViewModel.saveImage(thread
-                                     , FirebaseAuth.getInstance().currentUser!!.uid
-                                 , imageUri!!)
-                             }
-                             }
-            , modifier = Modifier.constrainAs(button){
+            if (imageUri == null) {
+                threadViewModel.saveData(
+                    thread, FirebaseAuth.getInstance().currentUser!!.uid, ""
+                )
+            } else {
+                threadViewModel.saveImage(
+                    thread, FirebaseAuth.getInstance().currentUser!!.uid, imageUri!!
+                )
+            }
+        }, modifier = Modifier.constrainAs(button) {
             end.linkTo(parent.end, margin = 12.dp)
             bottom.linkTo(parent.bottom, margin = 12.dp)
         }) {
-            Text(text =
-            "Post"
+            Text(
+                text =
+                "Post",
 //        SharedPref.getuserName(context)
-                , style = TextStyle(
+                style = TextStyle(
                     fontSize = 20.sp
                 ),
             )
