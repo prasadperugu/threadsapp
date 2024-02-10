@@ -41,20 +41,22 @@ fun Profile(navHostController: NavHostController) {
     val authViewModel: AuthViewModel = viewModel()
     val firebaseUser by authViewModel.firebaseUser.observeAsState(null)
 
-    val userViewModel: UserViewModel = viewModel()
-    val threads:List<ThreadModel>? by userViewModel.threads.observeAsState(null)
 
     val context = LocalContext.current
 
+    val userViewModel: UserViewModel = viewModel()
+    val threads: List<ThreadModel>? by userViewModel.threads.observeAsState(null)
+
     val user = UserModel(
-        name = SharedPref.getName(context), imageUrl = SharedPref.getImageUrl(context)
-        , userName = SharedPref.getuserName(context)
+        name = SharedPref.getName(context),
+        userName = SharedPref.getuserName(context),
+        imageUrl = SharedPref.getImageUrl(context),
     )
 
-    Log.i("nullerror","${userViewModel.fetchThreads(FirebaseAuth.getInstance().currentUser!!.uid)}")
 
     //here is here called null pointer exception
-    userViewModel.fetchThreads(FirebaseAuth.getInstance().currentUser!!.uid)
+//    userViewModel.fetchThreads(FirebaseAuth.getInstance().currentUser!!.uid)
+    if (firebaseUser != null) userViewModel.fetchThreads(firebaseUser!!.uid)
 
 
 
@@ -84,11 +86,7 @@ fun Profile(navHostController: NavHostController) {
                     .padding(16.dp)
             ) {
 
-                val (
-                    text, logo, userName,
-                    bio, followers, following, imageBox
-                    ,button
-                ) = createRefs()
+                val (text, logo, userName, bio, followers, following, imageBox, button) = createRefs()
 
 
                 Text(text = SharedPref.getName(context), style = TextStyle(
@@ -96,64 +94,56 @@ fun Profile(navHostController: NavHostController) {
                 ), modifier = Modifier.constrainAs(text) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
-                }
-                )
+                })
 
-                Image(
-                    painter =
+                Image(painter =
 //            painterResource(id = R.drawable.baseline_close_24),
-                    rememberAsyncImagePainter(model = SharedPref.getImageUrl(context)),
+                rememberAsyncImagePainter(model = SharedPref.getImageUrl(context)),
                     contentDescription = "close",
                     modifier = Modifier
-                        .constrainAs(logo)
-                        {
+                        .constrainAs(logo) {
                             top.linkTo(parent.top)
                             end.linkTo(parent.end)
                         }
                         .size(120.dp)
-                        .clip(CircleShape), contentScale = ContentScale.Crop
-                )
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop)
 
                 Text(text = SharedPref.getuserName(context), style = TextStyle(
-                    fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
+                     fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(userName) {
-                    top.linkTo(parent.top)
+                    top.linkTo(text.bottom)
                     start.linkTo(parent.start)
-                }
-                )
+                })
 
                 Text(text = SharedPref.getBio(context), style = TextStyle(
-                    fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
+                   fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(bio) {
                     top.linkTo(userName.bottom)
                     start.linkTo(parent.start)
-                }
-                )
+                })
 
                 Text(text = "0 Followers", style = TextStyle(
-                    fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
+                    fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(followers) {
                     top.linkTo(bio.bottom)
                     start.linkTo(parent.start)
-                }
-                )
+                })
 
                 Text(text = "0 Following", style = TextStyle(
-                    fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
+                    fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(following) {
                     top.linkTo(followers.bottom)
                     start.linkTo(parent.start)
-                }
-                )
+                })
 
                 ElevatedButton(onClick = {
                     authViewModel.logout()
 
-                }, modifier = Modifier.constrainAs(button){
+                }, modifier = Modifier.constrainAs(button) {
                     top.linkTo(following.bottom)
                     start.linkTo(parent.start)
-                }
-                ) {
+                }) {
                     Text(text = "Logout")
 
                 }

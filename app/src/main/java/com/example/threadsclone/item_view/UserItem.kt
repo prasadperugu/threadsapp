@@ -45,7 +45,8 @@ fun UserItem(
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp).clickable {
+                .padding(16.dp)
+                .clickable {
 
                     val routes = Routes.OtherUsers.routes.replace("{data}", users.uid)
                     navHostController.navigate(routes)
@@ -59,8 +60,7 @@ fun UserItem(
                 rememberAsyncImagePainter(model = users.imageUrl),
                 contentDescription = "close",
                 modifier = Modifier
-                    .constrainAs(userImage)
-                    {
+                    .constrainAs(userImage) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     }
@@ -73,7 +73,7 @@ fun UserItem(
             users.userName, style = TextStyle(
                 fontSize = 20.sp
             ), modifier = Modifier.constrainAs(userName) {
-                top.linkTo(userImage.top)
+                    top.linkTo(userImage.top)
                 start.linkTo(userImage.end, margin = 12.dp)
             }
             )

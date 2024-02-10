@@ -53,8 +53,6 @@ fun Search(navHostController: NavHostController) {
 
     Column() {
 
-
-
         Text(text = "Search", style = TextStyle(
             fontWeight = FontWeight.ExtraBold
             , fontSize = 24.sp

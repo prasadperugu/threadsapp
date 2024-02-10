@@ -140,12 +140,13 @@ fun OtherUsers(navHostController: NavHostController, uid: String) {
                 )
 
                 ElevatedButton(onClick = {
-//                    authViewModel.logout()
-                }, modifier = Modifier.constrainAs(button) {
-                    top.linkTo(following.bottom)
-                    start.linkTo(parent.start)
-                }
-                ) {
+                /*TODO*/
+                                         },
+                    modifier = Modifier.constrainAs(button){
+                        top.linkTo(following.bottom)
+                        start.linkTo(parent.start)
+                    }
+                    ) {
                     Text(text = "Follow")
 
                 }

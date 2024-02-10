@@ -16,6 +16,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.storage
 import java.util.UUID
@@ -62,6 +65,14 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun getData(uid: String, context: Context) {
+
+        val fireStoreDb = Firebase.firestore
+        val followersRef = fireStoreDb.collection("followers").document(uid)
+        val followingRef = fireStoreDb.collection("following").document(uid)
+
+        followingRef.set(mapOf("followingIds" to listOf<String>()))
+        followersRef.set(mapOf("followerIds" to listOf<String>()))
+
         userRef.child(uid).addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -157,8 +168,15 @@ class AuthViewModel : ViewModel() {
         context: Context
     ) {
 
-        val userData = UserModel(email, password, name, bio, userName, toString, uid!!)
+        val fireStoreDb: FirebaseFirestore = Firebase.firestore
+        val followersRef: DocumentReference = fireStoreDb.collection("followers").document(uid!!)
+        val followingRef: DocumentReference = fireStoreDb.collection("following").document(uid!!)
 
+
+        followingRef.set(mapOf("followingIds" to listOf<String>()))
+        followersRef.set(mapOf("followerIds" to listOf<String>()))
+
+        val userData = UserModel(email, password, name, bio, userName, toString, uid!!)
         userRef.child(uid!!).setValue(userData).addOnSuccessListener {
 
             //for login success this sharedPref has been hitted for login
