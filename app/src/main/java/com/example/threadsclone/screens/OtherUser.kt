@@ -31,31 +31,25 @@ import com.example.threadsclone.model.UserModel
 import com.example.threadsclone.navigation.Routes
 import com.example.threadsclone.utils.SharedPref
 import com.example.threadsclone.viewmodel.AuthViewModel
-import com.example.threadsclone.viewmodel.ThreadModel
 import com.example.threadsclone.viewmodel.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 
-@Composable
-fun Profile(navHostController: NavHostController) {
 
+@Composable
+fun OtherUsers(navHostController: NavHostController, uid: String) {
     val authViewModel: AuthViewModel = viewModel()
     val firebaseUser by authViewModel.firebaseUser.observeAsState(null)
 
     val userViewModel: UserViewModel = viewModel()
-    val threads:List<ThreadModel>? by userViewModel.threads.observeAsState(null)
+    val threads by userViewModel.threads.observeAsState(null)
+    val users by userViewModel.users.observeAsState(null)
 
     val context = LocalContext.current
 
-    val user = UserModel(
-        name = SharedPref.getName(context), imageUrl = SharedPref.getImageUrl(context)
-        , userName = SharedPref.getuserName(context)
-    )
 
-    Log.i("nullerror","${userViewModel.fetchThreads(FirebaseAuth.getInstance().currentUser!!.uid)}")
 
-    //here is here called null pointer exception
-    userViewModel.fetchThreads(FirebaseAuth.getInstance().currentUser!!.uid)
-
+    userViewModel.fetchThreads(uid)
+    userViewModel.fetchUser(uid)
 
 
     LaunchedEffect(firebaseUser) {
@@ -86,12 +80,11 @@ fun Profile(navHostController: NavHostController) {
 
                 val (
                     text, logo, userName,
-                    bio, followers, following, imageBox
-                    ,button
+                    bio, followers, following, imageBox, button
                 ) = createRefs()
 
 
-                Text(text = SharedPref.getName(context), style = TextStyle(
+                Text(text = users!!.name, style = TextStyle(
                     fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
                 ), modifier = Modifier.constrainAs(text) {
                     top.linkTo(parent.top)
@@ -102,7 +95,7 @@ fun Profile(navHostController: NavHostController) {
                 Image(
                     painter =
 //            painterResource(id = R.drawable.baseline_close_24),
-                    rememberAsyncImagePainter(model = SharedPref.getImageUrl(context)),
+                    rememberAsyncImagePainter(model = users!!.imageUrl),
                     contentDescription = "close",
                     modifier = Modifier
                         .constrainAs(logo)
@@ -114,7 +107,7 @@ fun Profile(navHostController: NavHostController) {
                         .clip(CircleShape), contentScale = ContentScale.Crop
                 )
 
-                Text(text = SharedPref.getuserName(context), style = TextStyle(
+                Text(text =users!!.userName, style = TextStyle(
                     fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
                 ), modifier = Modifier.constrainAs(userName) {
                     top.linkTo(parent.top)
@@ -122,7 +115,7 @@ fun Profile(navHostController: NavHostController) {
                 }
                 )
 
-                Text(text = SharedPref.getBio(context), style = TextStyle(
+                Text(text = users!!.bio, style = TextStyle(
                     fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
                 ), modifier = Modifier.constrainAs(bio) {
                     top.linkTo(userName.bottom)
@@ -147,27 +140,29 @@ fun Profile(navHostController: NavHostController) {
                 )
 
                 ElevatedButton(onClick = {
-                    authViewModel.logout()
-
-                }, modifier = Modifier.constrainAs(button){
+//                    authViewModel.logout()
+                }, modifier = Modifier.constrainAs(button) {
                     top.linkTo(following.bottom)
                     start.linkTo(parent.start)
                 }
                 ) {
-                    Text(text = "Logout")
+                    Text(text = "Follow")
 
                 }
 
 
             }
         }
-        items(threads ?: emptyList()) { pair ->
-            ThreadItem(
-                thread = pair,
-                users = user,
-                navHostController = navHostController,
-                userId = SharedPref.getuserName(context)
-            )
+
+        if (threads != null && users != null) {
+            items(threads ?: emptyList()) { pair ->
+                ThreadItem(
+                    thread = pair,
+                    users = users!!,
+                    navHostController = navHostController,
+                    userId = SharedPref.getuserName(context)
+                )
+            }
         }
     }
 
