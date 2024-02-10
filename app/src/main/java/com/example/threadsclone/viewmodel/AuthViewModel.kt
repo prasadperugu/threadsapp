@@ -34,7 +34,7 @@ class AuthViewModel : ViewModel() {
     val error: LiveData<String> = _error
 
     private val storageRef: StorageReference = Firebase.storage.reference
-    private val imageRef = storageRef.child("users/${UUID.randomUUID()}.jpg")
+    private val imageRef: StorageReference = storageRef.child("users/${UUID.randomUUID()}.jpg")
 
 
     init {
@@ -133,10 +133,13 @@ class AuthViewModel : ViewModel() {
         uid: String?,
         context: Context
     ) {
+        Log.i("***0", "${imageUri}")
         val uploadTask = imageRef.putFile(imageUri)
+        Log.i("***1", "${uploadTask}")
         uploadTask.addOnSuccessListener {
-
-            imageRef.downloadUrl.addOnCompleteListener {
+            Log.i("***2", "${uploadTask.toString()}")
+            Log.i("***2", "${imageUri.toString()}")
+            imageRef.downloadUrl.addOnSuccessListener {
                 saveData(email, password, name, bio, userName, it.toString(), uid, context)
             }
         }

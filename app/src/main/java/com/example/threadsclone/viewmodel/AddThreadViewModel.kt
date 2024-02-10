@@ -43,7 +43,7 @@ class AddThreadViewModel : ViewModel() {
         val uploadTask = imageRef.putFile(imageUri)
         uploadTask.addOnSuccessListener {
 
-            imageRef.downloadUrl.addOnCompleteListener {
+            imageRef.downloadUrl.addOnSuccessListener {
                 saveData(thread, userId, it.toString())
             }
         }
