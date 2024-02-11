@@ -231,8 +231,7 @@ fun AddThreads(navHostController: NavHostController) {
                     contentDescription = "close",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight()
-                    , contentScale = ContentScale.Crop
+                        .fillMaxHeight(), contentScale = ContentScale.Crop
                 )
 
                 Icon(imageVector = Icons.Default.Close,
@@ -276,7 +275,7 @@ fun AddThreads(navHostController: NavHostController) {
                 .padding(horizontal = 20.dp, vertical = 10.dp) // Adjust paddings as needed
                 .background(
                     color = Color(0xFF007AFF),
-                    shape =  RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(20.dp)
                 ), // Use MaterialTheme color and round corners
             content = {
                 Text(
@@ -289,7 +288,6 @@ fun AddThreads(navHostController: NavHostController) {
                 )
             }
         )
-
 
 
     }
