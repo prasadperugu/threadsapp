@@ -44,12 +44,24 @@ fun OtherUsers(navHostController: NavHostController, uid: String) {
     val threads by userViewModel.threads.observeAsState(null)
     val users by userViewModel.users.observeAsState(null)
 
+    val followerList by userViewModel.followerList.observeAsState(null)
+    val followingList by userViewModel.followingList.observeAsState(null)
+
+
     val context = LocalContext.current
 
 
 
     userViewModel.fetchThreads(uid)
     userViewModel.fetchUser(uid)
+    userViewModel.getFollowers(uid)
+    userViewModel.getFollowing(uid)
+
+
+    var currentUserId = ""
+    if (FirebaseAuth.getInstance().currentUser != null)
+        currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
+
 
 
     LaunchedEffect(firebaseUser) {
@@ -107,10 +119,10 @@ fun OtherUsers(navHostController: NavHostController, uid: String) {
                         .clip(CircleShape), contentScale = ContentScale.Crop
                 )
 
-                Text(text =users!!.userName, style = TextStyle(
-                    fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
+                Text(text = users!!.userName, style = TextStyle(
+                     fontSize = 24.sp
                 ), modifier = Modifier.constrainAs(userName) {
-                    top.linkTo(parent.top)
+                    top.linkTo(text.bottom)
                     start.linkTo(parent.start)
                 }
                 )
@@ -123,16 +135,19 @@ fun OtherUsers(navHostController: NavHostController, uid: String) {
                 }
                 )
 
-                Text(text = "0 Followers", style = TextStyle(
-                    fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
+                Text(
+                    text = "${followerList?.size} Followers"
+               ,style = TextStyle(
+                    fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(followers) {
-                    top.linkTo(bio.bottom)
-                    start.linkTo(parent.start)
-                }
+                top.linkTo(bio.bottom)
+                start.linkTo(parent.start)
+            }
                 )
 
-                Text(text = "0 Following", style = TextStyle(
-                    fontWeight = FontWeight.ExtraBold, fontSize = 24.sp
+                Text(text =
+                "${followingList?.size} Following", style = TextStyle(
+                    fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(following) {
                     top.linkTo(followers.bottom)
                     start.linkTo(parent.start)
@@ -140,14 +155,22 @@ fun OtherUsers(navHostController: NavHostController, uid: String) {
                 )
 
                 ElevatedButton(onClick = {
-                /*TODO*/
-                                         },
-                    modifier = Modifier.constrainAs(button){
+                    if (currentUserId != "")
+//                    if (FirebaseAuth.getInstance().currentUser!=null)
+                        userViewModel.followUsers(uid, currentUserId)
+                },
+                    modifier = Modifier.constrainAs(button) {
                         top.linkTo(following.bottom)
                         start.linkTo(parent.start)
                     }
-                    ) {
-                    Text(text = "Follow")
+                ) {
+
+                    Text(
+                        text = if (followerList != null && followerList!!.isNotEmpty() && followerList!!.contains(
+                                currentUserId
+                            )
+                        ) "Following" else "Follow"
+                    )
 
                 }
 

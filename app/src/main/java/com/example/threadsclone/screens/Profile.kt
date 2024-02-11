@@ -47,6 +47,18 @@ fun Profile(navHostController: NavHostController) {
     val userViewModel: UserViewModel = viewModel()
     val threads: List<ThreadModel>? by userViewModel.threads.observeAsState(null)
 
+
+    val followerList by userViewModel.followerList.observeAsState(null)
+    val followingList by userViewModel.followingList.observeAsState(null)
+
+    var currentUserId = ""
+    if (FirebaseAuth.getInstance().currentUser != null)
+        currentUserId = FirebaseAuth.getInstance().currentUser!!.uid
+
+    if (currentUserId != "") {
+        userViewModel.getFollowers(currentUserId)
+        userViewModel.getFollowing(currentUserId)
+    }
     val user = UserModel(
         name = SharedPref.getName(context),
         userName = SharedPref.getuserName(context),
@@ -110,27 +122,27 @@ fun Profile(navHostController: NavHostController) {
                     contentScale = ContentScale.Crop)
 
                 Text(text = SharedPref.getuserName(context), style = TextStyle(
-                     fontSize = 20.sp
+                    fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(userName) {
                     top.linkTo(text.bottom)
                     start.linkTo(parent.start)
                 })
 
                 Text(text = SharedPref.getBio(context), style = TextStyle(
-                   fontSize = 20.sp
+                    fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(bio) {
                     top.linkTo(userName.bottom)
                     start.linkTo(parent.start)
                 })
 
-                Text(text = "0 Followers", style = TextStyle(
+                Text(text = "${followerList!!.size} Followers", style = TextStyle(
                     fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(followers) {
                     top.linkTo(bio.bottom)
                     start.linkTo(parent.start)
                 })
 
-                Text(text = "0 Following", style = TextStyle(
+                Text(text = "${followingList!!.size} Following", style = TextStyle(
                     fontSize = 20.sp
                 ), modifier = Modifier.constrainAs(following) {
                     top.linkTo(followers.bottom)
