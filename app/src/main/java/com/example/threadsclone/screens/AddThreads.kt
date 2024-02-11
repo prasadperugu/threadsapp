@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
@@ -54,6 +56,7 @@ import com.example.threadsclone.navigation.Routes
 import com.example.threadsclone.utils.SharedPref
 import com.example.threadsclone.viewmodel.AddThreadViewModel
 import com.google.firebase.auth.FirebaseAuth
+
 
 @Composable
 fun AddThreads(navHostController: NavHostController) {
@@ -250,35 +253,43 @@ fun AddThreads(navHostController: NavHostController) {
             , style = TextStyle(
                 fontSize = 20.sp
             ), modifier = Modifier.constrainAs(replyText) {
-
-                start.linkTo(parent.start, margin = 12.dp)
-                bottom.linkTo(parent.bottom, margin = 12.dp)
+                start.linkTo(parent.start, margin = 10.dp)
+                bottom.linkTo(parent.bottom, margin = 10.dp)
             }
         )
 
-        TextButton(onClick = {
-            if (imageUri == null) {
-                threadViewModel.saveData(
-                    thread, FirebaseAuth.getInstance().currentUser!!.uid, ""
-                )
-            } else {
-                threadViewModel.saveImage(
-                    thread, FirebaseAuth.getInstance().currentUser!!.uid, imageUri!!
+        TextButton(
+            onClick = {
+                val userId = FirebaseAuth.getInstance().currentUser!!.uid
+                if (imageUri == null) {
+                    threadViewModel.saveData(thread, userId, "")
+                } else {
+                    threadViewModel.saveImage(thread, userId, imageUri!!)
+                }
+            },
+            modifier = Modifier
+                .constrainAs(button) {
+                    end.linkTo(parent.end, margin = 12.dp)
+                    bottom.linkTo(parent.bottom, margin = 12.dp)
+//                    width(wrapContent) // Ensures content-based sizing
+                }
+                .padding(horizontal = 20.dp, vertical = 10.dp) // Adjust paddings as needed
+                .background(
+                    color = Color(0xFF007AFF),
+                    shape =  RoundedCornerShape(20.dp)
+                ), // Use MaterialTheme color and round corners
+            content = {
+                Text(
+                    text = "Post",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        color = Color.White, // Use contrasting color for text
+                        fontWeight = FontWeight.Medium // Optionally add weight for emphasis
+                    )
                 )
             }
-        }, modifier = Modifier.constrainAs(button) {
-            end.linkTo(parent.end, margin = 12.dp)
-            bottom.linkTo(parent.bottom, margin = 12.dp)
-        }) {
-            Text(
-                text =
-                "Post",
-//        SharedPref.getuserName(context)
-                style = TextStyle(
-                    fontSize = 20.sp
-                ),
-            )
-        }
+        )
+
 
 
     }
