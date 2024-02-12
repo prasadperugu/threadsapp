@@ -3,6 +3,7 @@ package com.example.threadsclone.viewmodel
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,6 +36,8 @@ class AuthViewModel : ViewModel() {
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
+
+
 
     private val storageRef: StorageReference = Firebase.storage.reference
     private val imageRef: StorageReference = storageRef.child("users/${UUID.randomUUID()}.jpg")
@@ -107,31 +110,35 @@ class AuthViewModel : ViewModel() {
         imageUri: Uri,
         context: Context
     ) {
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-            Log.i("outsideissuccessful", "outsideissuccessful")
-            //not hitting this firebase
-            try {
-                if (it.isSuccessful) {
-                    Log.i("insideissuccessful", "insideissuccessful")
-                    _firebaseUser.postValue(auth.currentUser)
-                    saveImage(
-                        email,
-                        password,
-                        name,
-                        bio,
-                        userName,
-                        imageUri,
-                        auth.currentUser?.uid,
-                        context
-                    )
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // User creation is successful
+                _firebaseUser.postValue(auth.currentUser)
+                saveImage(
+                    email,
+                    password,
+                    name,
+                    bio,
+                    userName,
+                    imageUri,
+                    auth.currentUser?.uid,
+                    context
+                )
+            } else {
+                // User creation failed
+                val errorMessage = task.exception?.message
+                Log.i("errorText","${errorMessage.toString()}")
+                if (errorMessage != null) {
+                    // Display the error message as a toast
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 } else {
-                    Log.i("Elseintry", "Elseintry${it.exception?.message}")
+                    // Handle other types of errors
+                    Toast.makeText(context, "Something went wrong.", Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: Exception) {
-                Log.i("errorblock", "insideissuccessful")
-                _error.postValue("Something went wrong.")
             }
         }
+
+
     }
 
     private fun saveImage(
